@@ -5,6 +5,8 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 from sklearn.preprocessing import MultiLabelBinarizer
 import user_analytics
+import plotly.graph_objects as go
+
 
 # Load pretrained tokenizer and model
 model_name = "SamLowe/roberta-base-go_emotions"
@@ -60,13 +62,19 @@ if page == "Emotion Detection":
         emotion_list = list(predicted_emotions[0]) if predicted_emotions else []
 
         # Display the predicted emotions
-        predicted_emotion = emotion_list[0]  #
-        st.write(f"I can sense you are feeling {predicted_emotion}")
+        predicted_emotions = mlb.inverse_transform(predictions)
+        emotion_list = list(predicted_emotions[0]) if predicted_emotions else []
+
+        # Check if emotion_list is not empty before accessing it
+        if emotion_list:
+            predicted_emotion = emotion_list[0]
+            st.write(f"I can sense you are feeling {predicted_emotion}")
+        else:
+            st.write("I couldn't detect any specific emotion.")
     else:
         st.write("Please enter some text to analyze.")
 
-# Page 2: Another Page (Customize this section as needed)
 elif page == "User Analytics":
     page2 = user_analytics
     page2.go_to_page_user_analytics()
-    # Add more input fields or functionality for this page
+    
